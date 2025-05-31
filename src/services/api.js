@@ -1,12 +1,12 @@
-// src/services/api.js
 import axios from 'axios';
 
-// Use a variável de ambiente para a URL base da API em produção,
-// ou localhost para desenvolvimento.
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000';
 
 const api = axios.create({
-  baseURL: `${API_BASE_URL}/api`, // Adiciona /api ao final se sua base URL não o incluir
+  baseURL: `${API_BASE_URL}/api`,
+  headers: {
+    'Content-Type': 'application/json'
+  }
 });
 
 api.interceptors.request.use((config) => {
@@ -16,5 +16,17 @@ api.interceptors.request.use((config) => {
   }
   return config;
 });
+
+api.interceptors.response.use(
+  response => response,
+  error => {
+    if (error.response && error.response.status === 401) {
+      // Se não autorizado, limpa o usuário e redireciona para login
+      localStorage.removeItem('user');
+      window.location.href = '/login';
+    }
+    return Promise.reject(error);
+  }
+);
 
 export default api;
