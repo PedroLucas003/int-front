@@ -1,6 +1,11 @@
+// src/services/auth.js
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5000/api/auth';
+// Use a variável de ambiente para a URL base da API em produção,
+// ou localhost para desenvolvimento.
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000';
+
+const API_URL = `${API_BASE_URL}/api/auth`; // Ajuste conforme a estrutura da sua URL base
 
 export const login = async (email, password) => {
   const response = await axios.post(`${API_URL}/login`, { email, password });
